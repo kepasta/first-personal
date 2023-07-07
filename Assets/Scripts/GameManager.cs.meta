@@ -1,0 +1,14 @@
+fileFormatVersion: 2
+guid: fef4892417b97cb47922a44115ede2d4
+MonoImporter:
+  externalObjects: {}
+  serializedVersion: 2
+  defaultReferences:
+  - player: {fileID: 7851450857166402475, guid: eca412388109e85458b078d88ae34c6d, type: 3}
+  - weaponPowerup: {fileID: 8763578780014741395, guid: deb2db38d06ff644bafed4022d6b30c0, type: 3}
+  - healthPack: {fileID: 3573414988994611032, guid: 70b30b6041315354882119dda7b641f0, type: 3}
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
