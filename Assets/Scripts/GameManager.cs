@@ -13,8 +13,10 @@ public class GameManager : MonoBehaviour
     public GameObject healthPack;
     public TextMeshProUGUI goldText;
     public GameObject startScreen;
+    public GameObject gameOverScreen;
+    private PlayerController playerController;
     private float gold;
-    private float spawnRate = 10;
+    private float spawnRate = 15f;
     [SerializeField] int waveSize;
     private int[] enemyWaveLimits = new int[] { 30, 50, 70, 75 };
     private float xSpawnRange = 8;
@@ -22,9 +24,30 @@ public class GameManager : MonoBehaviour
     private float gameTime = 0;
     public bool isGameActive = false;
     public bool isGamePaused = false;
+
+    private void Start()
+    {
+        playerController = player.GetComponent<PlayerController>();
+        StartGame();
+    }
     // Start is called before the first frame update
     public void StartGame()
     {
+        // Reset field
+        /* 
+        foreach (GameObject enemy in GameObject.FindGameObjectsWithTag("Enemy"))
+        {
+            Destroy(enemy);
+        }
+        foreach (GameObject healthPack in GameObject.FindGameObjectsWithTag("Healthpack"))
+        {
+            Destroy(healthPack);
+        }
+        foreach (GameObject weaponPowerup in GameObject.FindGameObjectsWithTag("Weapon Powerup"))
+        {
+            Destroy(weaponPowerup);
+        }
+        */
         startScreen.SetActive(false);
         isGameActive = true;
         goldText.enabled = true;
@@ -32,7 +55,7 @@ public class GameManager : MonoBehaviour
         waveSize = 5;
         gold = 0;
         UpdateGold(0);
-        InvokeRepeating(nameof(SpawnWave), 3f, 15f);
+        InvokeRepeating(nameof(SpawnWave), 3f, spawnRate);
         InvokeRepeating(nameof(SpawnPowerup), 10f, 20f);
         InvokeRepeating(nameof(SpawnHealthpack), 30f, 60f);
     }
@@ -40,9 +63,14 @@ public class GameManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (isGameActive && !isGamePaused)
+        if (IsGameActive())
         {
             gameTime += Time.deltaTime;
+        }
+
+        if (playerController.hp <= 0)
+        {
+            StartCoroutine(GameOver());
         }
     }
 
@@ -110,5 +138,21 @@ public class GameManager : MonoBehaviour
         goldText.text = "Gold: " + Mathf.FloorToInt(gold);
     }
 
+    public bool IsGameActive()
+    {
+        return isGameActive && !isGamePaused;
+    }
 
+    IEnumerator GameOver()
+    {
+        isGameActive = false;
+        yield return new WaitForSeconds(2f);
+        gameOverScreen.SetActive(true);
+    }
+
+    public void RestartGame()
+    {
+        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+        StartGame();
+    }
 }

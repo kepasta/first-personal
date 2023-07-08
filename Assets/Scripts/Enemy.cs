@@ -51,13 +51,17 @@ public class Enemy : MonoBehaviour
 
     void TakeDamage (float damage)
     {
-        hp -= damage;
+        if (gameManager.IsGameActive())
+        {
+            hp -= damage;
+        }
+        
     }
 
     IEnumerator DealDamage ()
     {
         PlayerController player = GameObject.FindWithTag("Player").GetComponent<PlayerController>();
-        while (true)
+        while (gameManager.IsGameActive())
         {
             player.UpdateHp(-damage);
             Debug.Log("hp: " + player.hp);

@@ -8,10 +8,11 @@ public class PlayerController : MonoBehaviour
     public float speed = 10.0f;
     private float horizontalBound = 50.0f;
     private float verticalBound = 50.0f;
-    float maxHp = 100;
+    public float maxHp = 100;
     public float hp;
     public GameObject[] weapons;
     private Coroutine[] weaponCoroutines;
+    public GameManager gameManager;
     public Slider hpBar;
     private int maxWeaponLvl = 6;
     private int currentWeapon;
@@ -33,13 +34,10 @@ public class PlayerController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        MovePlayer();
-        ConstrainPlayerPosition();
-
-        // ->Game manager 
-        if (hp <= 0)
+        if (gameManager.IsGameActive())
         {
-            // Game Over
+            MovePlayer();
+            ConstrainPlayerPosition();
         }
     }
 
@@ -76,7 +74,7 @@ public class PlayerController : MonoBehaviour
     // Weapon_1 
     IEnumerator SpawnWeaponOne(float fireRate)
     {
-        while (true)
+        while (gameManager.IsGameActive())
         {
             GameObject weapon = weapons[0];
             weapon.transform.rotation = Quaternion.AngleAxis(Vector3.Angle(Vector3.right, movingDir) * Mathf.Sign(movingDir.y), Vector3.forward);
@@ -88,7 +86,7 @@ public class PlayerController : MonoBehaviour
 
     IEnumerator SpawnWeaponTwo(int number)
     {
-        while (true)
+        while (gameManager.IsGameActive())
         {
             for (int i = 0; i < number; i++)
             {
@@ -132,15 +130,20 @@ public class PlayerController : MonoBehaviour
 
     public void UpdateHp (float hpToAdd)
     {
-        hp += hpToAdd;
-        if (hp >= maxHp)
+        if (hp + hpToAdd >= maxHp)
         {
-            hp = maxHp;
+            hpToAdd = maxHp - hp;
             hpBar.gameObject.SetActive(false);
         } else
         {
             hpBar.gameObject.SetActive(true);
         }
+        if (hp + hpToAdd <= 0)
+        {
+            hpToAdd = -hp;
+        }
+
+        hp += hpToAdd;
         hpBar.value = hp;
     }
 
@@ -162,6 +165,6 @@ public class PlayerController : MonoBehaviour
     public void SetMaxHp(float newMaxHp)
     {
         maxHp = newMaxHp;
-        hpBar.value = newMaxHp;
+        hpBar.maxValue = newMaxHp;
     }
 }
