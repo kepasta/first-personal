@@ -1,6 +1,9 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
+using TMPro;
+using UnityEngine.SceneManagement;
 
 public class GameManager : MonoBehaviour
 {
@@ -8,9 +11,11 @@ public class GameManager : MonoBehaviour
     public List<GameObject> enemies;
     public GameObject weaponPowerup;
     public GameObject healthPack;
+    public TextMeshProUGUI goldText;
+    public GameObject startScreen;
     private float gold;
     private float spawnRate = 10;
-    private int waveSize;
+    [SerializeField] int waveSize;
     private int[] enemyWaveLimits = new int[] { 30, 50, 70, 75 };
     private float xSpawnRange = 8;
     private float ySpawnRange = 6;
@@ -18,12 +23,15 @@ public class GameManager : MonoBehaviour
     public bool isGameActive = false;
     public bool isGamePaused = false;
     // Start is called before the first frame update
-    void Start()
+    public void StartGame()
     {
+        startScreen.SetActive(false);
         isGameActive = true;
+        goldText.enabled = true;
         player.SetActive(true);
         waveSize = 5;
         gold = 0;
+        UpdateGold(0);
         InvokeRepeating(nameof(SpawnWave), 3f, 15f);
         InvokeRepeating(nameof(SpawnPowerup), 10f, 20f);
         InvokeRepeating(nameof(SpawnHealthpack), 30f, 60f);
@@ -99,6 +107,8 @@ public class GameManager : MonoBehaviour
     public void UpdateGold(float reward)
     {
         gold += reward;
-        Debug.Log("gold " + gold);
+        goldText.text = "Gold: " + Mathf.FloorToInt(gold);
     }
+
+
 }

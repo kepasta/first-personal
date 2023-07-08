@@ -1,16 +1,18 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class PlayerController : MonoBehaviour
 {
     public float speed = 10.0f;
     private float horizontalBound = 50.0f;
     private float verticalBound = 50.0f;
-    public float maxHp;
+    float maxHp = 100;
     public float hp;
     public GameObject[] weapons;
     private Coroutine[] weaponCoroutines;
+    public Slider hpBar;
     private int maxWeaponLvl = 6;
     private int currentWeapon;
     public Vector3 movingDir = new(1, 0, 0);
@@ -23,8 +25,7 @@ public class PlayerController : MonoBehaviour
     {
         weaponCoroutines = new Coroutine[weapons.Length];
         currentWeapon = 0;
-        maxHp = 100;
-        hp = maxHp;
+        SetMaxHp(maxHp);
         weaponLvl = new int[] { 0, 0 };
         UpgradeWeapon();
     }
@@ -132,10 +133,15 @@ public class PlayerController : MonoBehaviour
     public void UpdateHp (float hpToAdd)
     {
         hp += hpToAdd;
-        if (hp > maxHp)
+        if (hp >= maxHp)
         {
             hp = maxHp;
+            hpBar.gameObject.SetActive(false);
+        } else
+        {
+            hpBar.gameObject.SetActive(true);
         }
+        hpBar.value = hp;
     }
 
     private void OnTriggerEnter(Collider other)
@@ -151,5 +157,11 @@ public class PlayerController : MonoBehaviour
             UpdateHp(20);
             Destroy(other.gameObject);
         }
+    }
+
+    public void SetMaxHp(float newMaxHp)
+    {
+        maxHp = newMaxHp;
+        hpBar.value = newMaxHp;
     }
 }

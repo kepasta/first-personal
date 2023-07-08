@@ -56,10 +56,11 @@ public class Enemy : MonoBehaviour
 
     IEnumerator DealDamage ()
     {
+        PlayerController player = GameObject.FindWithTag("Player").GetComponent<PlayerController>();
         while (true)
         {
-            GameObject.FindWithTag("Player").GetComponent<PlayerController>().UpdateHp(-damage);
-            Debug.Log("hp: " + GameObject.FindWithTag("Player").GetComponent<PlayerController>().hp);
+            player.UpdateHp(-damage);
+            Debug.Log("hp: " + player.hp);
             yield return new WaitForSeconds(1);
         }
     }
