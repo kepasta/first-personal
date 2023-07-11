@@ -18,12 +18,14 @@ public class PlayerController : MonoBehaviour
     private int currentWeapon;
     public Vector3 movingDir = new(1, 0, 0);
     private int[] weaponLvl;
+    private GameObject playerBody;
 
 
 
     // Start is called before the first frame update
     void Start()
     {
+        playerBody = GameObject.FindGameObjectWithTag("Player body");
         weaponCoroutines = new Coroutine[weapons.Length];
         currentWeapon = 0;
         SetMaxHp(maxHp);
@@ -46,10 +48,9 @@ public class PlayerController : MonoBehaviour
     {
         float horizontalInput = Input.GetAxis("Horizontal");
         float verticalInput = Input.GetAxis("Vertical");
-        Vector3 horizontalStep = horizontalInput * speed * Time.deltaTime * Vector3.right;
-        Vector3 verticalStep = speed * Time.deltaTime * verticalInput * Vector3.up;
-        transform.Translate(horizontalStep);
-        transform.Translate(verticalStep);
+        Vector3 horizontalStep = horizontalInput * Vector3.right;
+        Vector3 verticalStep = verticalInput * Vector3.up;
+        transform.Translate((horizontalStep + verticalStep).normalized * speed * Time.deltaTime);
         if (horizontalStep != Vector3.zero || verticalStep != Vector3.zero)
         {
             movingDir = (horizontalStep + verticalStep).normalized;

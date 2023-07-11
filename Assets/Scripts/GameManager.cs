@@ -12,8 +12,11 @@ public class GameManager : MonoBehaviour
     public GameObject weaponPowerup;
     public GameObject healthPack;
     public TextMeshProUGUI goldText;
+    public TextMeshProUGUI timeText;
+    public Coroutine timeCount;
     public GameObject startScreen;
     public GameObject gameOverScreen;
+    public GameObject pauseScreen;
     private PlayerController playerController;
     private float gold;
     private float spawnRate = 15f;
@@ -28,7 +31,6 @@ public class GameManager : MonoBehaviour
     private void Start()
     {
         playerController = player.GetComponent<PlayerController>();
-        StartGame();
     }
     // Start is called before the first frame update
     public void StartGame()
@@ -51,6 +53,8 @@ public class GameManager : MonoBehaviour
         startScreen.SetActive(false);
         isGameActive = true;
         goldText.enabled = true;
+        timeText.enabled = true;
+        timeCount = StartCoroutine(TimeCount());
         player.SetActive(true);
         waveSize = 5;
         gold = 0;
@@ -66,6 +70,11 @@ public class GameManager : MonoBehaviour
         if (IsGameActive())
         {
             gameTime += Time.deltaTime;
+        }
+
+        if (isGameActive && Input.GetKeyDown(KeyCode.Escape))
+        {
+            TogglePause();
         }
 
         if (playerController.hp <= 0)
@@ -150,9 +159,26 @@ public class GameManager : MonoBehaviour
         gameOverScreen.SetActive(true);
     }
 
+    IEnumerator TimeCount()
+    {
+        while (IsGameActive())
+        {
+            int seconds = Mathf.FloorToInt(gameTime) % 60;
+            int minutes = Mathf.FloorToInt(gameTime / 60);
+            timeText.text = "Time: " + string.Format("{0:00}:{1:00}", minutes, seconds);
+            yield return new WaitForSeconds(1f);
+        }
+    }
+
     public void RestartGame()
     {
-        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
-        StartGame();
+        SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+    }
+
+    public void TogglePause()
+    {
+        isGamePaused = !isGamePaused;
+        Time.timeScale = isGamePaused ? 0 : 1;
+        pauseScreen.SetActive(isGamePaused);
     }
 }

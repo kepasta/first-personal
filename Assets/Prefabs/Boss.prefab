@@ -143,4 +143,4 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   hp: 50
   damage: 10
-  reward: 10
+  reward: 20
