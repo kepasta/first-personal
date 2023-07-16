@@ -55,6 +55,8 @@ public class PlayerController : MonoBehaviour
         {
             movingDir = (horizontalStep + verticalStep).normalized;
         }
+
+        playerBody.transform.rotation = Quaternion.Euler(Vector3.Angle(Vector3.right, movingDir) * (-Mathf.Sign(movingDir.y)), 90, -90);
     }
 
     // Prevents the player from leaving the game area

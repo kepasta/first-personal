@@ -17,5 +17,6 @@ public class MoveTowardsPlayer : MonoBehaviour
     {
         Vector3 lookDir = player.transform.position - transform.position;
         transform.position = Vector3.MoveTowards(transform.position, player.transform.position, speed * Time.deltaTime);
+        transform.rotation = Quaternion.AngleAxis(Vector3.Angle(Vector3.up, lookDir) * -Mathf.Sign(lookDir.x), Vector3.forward);
     }
 }
